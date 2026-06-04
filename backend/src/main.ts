@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
+import graphqlUploadExpress from 'graphql-upload/graphqlUploadExpress.mjs';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +22,13 @@ async function bootstrap() {
   });
 
   app.use(cookieParser());
+
+  app.use(
+    graphqlUploadExpress({
+      maxFileSize: 10_000_000, // 10 MB
+      maxFiles: 1,
+    }),
+  );
 
   await app.listen(process.env.PORT ?? 3000);
 }
