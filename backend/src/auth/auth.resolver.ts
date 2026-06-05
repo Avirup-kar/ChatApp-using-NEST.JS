@@ -6,6 +6,11 @@ import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+interface JwtPayload {
+  username: string;
+  sub: string; // UUID
+}
+
 @Resolver()
 export class AuthResolver {
   constructor(
@@ -20,10 +25,10 @@ export class AuthResolver {
       throw new UnauthorizedException('Refresh token not found');
     }
 
-    let payload;
+    let payload: JwtPayload;
     try {
       // type the verified token payload to include `sub`
-      payload = this.jwtService.verify(refreshToken, {
+      payload = this.jwtService.verify<JwtPayload>(refreshToken, {
         secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
       });
     } catch (error) {
@@ -39,5 +44,16 @@ export class AuthResolver {
         'No user present by this name, Plz SingUp first!',
       );
     }
+
+    const expiresIn = 15000;
+    const expiration = Math.floor(Date.now() / 1000) + expiresIn;
+    const accessToken = this.jwtService.sign(
+      { ...payload, exp: expiration },
+      {
+        secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
+      },
+    );
+    res.cookie('access_token', accessToken, { httpOnly: true });
+    return accessToken;
   }
 }
