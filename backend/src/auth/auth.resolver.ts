@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { Resolver, Query } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
+import { User } from 'generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 interface JwtPayload {
@@ -55,5 +56,25 @@ export class AuthResolver {
     );
     res.cookie('access_token', accessToken, { httpOnly: true });
     return accessToken;
+  }
+
+  private issueTokens(user: User, response: Response) {
+    const payload = { username: user.fullname, sub: user.id };
+
+    const accessToken = this.jwtService.sign(
+      { ...payload },
+      {
+        secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
+        expiresIn: '150sec',
+      },
+    );
+
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
+      expiresIn: '7d',
+    });
+
+    response.cookie('access_token', accessToken, { httpOnly: true });
+    response.cookie('refresh_token', refreshToken, { httpOnly: true });
   }
 }
