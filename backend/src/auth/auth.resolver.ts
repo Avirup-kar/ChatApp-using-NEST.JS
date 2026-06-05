@@ -76,5 +76,7 @@ export class AuthResolver {
 
     response.cookie('access_token', accessToken, { httpOnly: true });
     response.cookie('refresh_token', refreshToken, { httpOnly: true });
+
+    return { user };
   }
 }
