@@ -1,4 +1,5 @@
-import { UnauthorizedException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resolver, Query } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
@@ -13,14 +14,15 @@ export class AuthResolver {
     private readonly configService: ConfigService,
   ) {}
 
-  refreshToken(req: Request, res: Response) {
+  async refreshToken(req: Request, res: Response) {
     const refreshToken = req.cookies['refresh_token'] as string;
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token not found');
     }
 
-    let payload: object;
+    let payload;
     try {
+      // type the verified token payload to include `sub`
       payload = this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
       });
@@ -28,8 +30,14 @@ export class AuthResolver {
       throw new UnauthorizedException('Invalid or expired refresh token');
     }
 
-    // const existUser = this.prisma.user.findUnique({
-    //   where: { id: payload.sub },
-    // });
+    const existUser = await this.prisma.user.findUnique({
+      where: { id: payload.sub },
+    });
+
+    if (!existUser) {
+      throw new NotFoundException(
+        'No user present by this name, Plz SingUp first!',
+      );
+    }
   }
 }
