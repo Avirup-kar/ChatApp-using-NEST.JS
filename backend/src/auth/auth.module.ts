@@ -8,7 +8,7 @@ import { PrismaModule } from 'src/prisma/prisma.module';
   imports: [
     JwtModule.registerAsync({
       useFactory: () => ({
-        secret: 'gdhdyttsHHGGE74gFR745g87sdfgdfgdfgdfgdfgdfgdfgdfgdfg',
+        secret: process.env.REFRESH_TOKEN_SECRET,
       }),
     }),
     PrismaModule,
