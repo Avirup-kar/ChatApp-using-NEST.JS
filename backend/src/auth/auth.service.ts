@@ -124,5 +124,14 @@ export class AuthService {
     return this.issueTokens(newUser, response);
   }
 
-  
+  async login(loginDto: LoginDto, response: Response) {
+    const user = await this.validateUser(loginDto);
+
+    if (!user) {
+      throw new BadRequestException({
+        invalidCredentials: 'Invalid credentials',
+      });
+    }
+    return this.issueTokens(user, response);
+  }
 }
