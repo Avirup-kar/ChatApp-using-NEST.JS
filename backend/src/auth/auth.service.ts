@@ -7,6 +7,7 @@ import { Request, Response } from 'express';
 import { User } from 'generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginDto } from './dto';
+import * as bcrypt from 'bcrypt';
 
 interface JwtPayload {
   username: string;
@@ -81,5 +82,17 @@ export class AuthService {
     return { user };
   }
 
-  validateUser(logingDto: LoginDto) {}
+  async validateUser(loginDto: LoginDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email: loginDto.email,
+      },
+    });
+
+    if (user && (await bcrypt.compare(loginDto.password, user.password))) {
+      return user;
+    }
+
+    return null;
+  }
 }
