@@ -134,4 +134,10 @@ export class AuthService {
     }
     return this.issueTokens(user, response);
   }
+
+  logout(response: Response) {
+    response.clearCookie('access_token');
+    response.clearCookie('refresh_token');
+    return 'Successfully logged out';
+  }
 }
