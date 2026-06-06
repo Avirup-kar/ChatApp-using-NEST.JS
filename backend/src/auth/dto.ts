@@ -24,3 +24,15 @@ export class RegisterDto {
   @IsEmail({}, { message: 'Email must be valid.' })
   email!: string;
 }
+
+InputType();
+export class Loginpto {
+  @Field()
+  @IsNotEmpty({ message: 'Email is required.' })
+  @IsEmail({}, { message: 'Email must be valid.' })
+  email!: string;
+
+  @Field()
+  @IsNotEmpty({ message: 'Password is required.' })
+  password!: string;
+}
