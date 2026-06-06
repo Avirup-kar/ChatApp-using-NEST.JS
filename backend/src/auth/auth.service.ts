@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Resolver, Query } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { User } from 'generated/prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { LoginDto } from './dto';
+import { LoginDto, RegisterDto } from './dto';
 import * as bcrypt from 'bcrypt';
 
 interface JwtPayload {
@@ -44,7 +48,7 @@ export class AuthService {
 
     if (!existUser) {
       throw new NotFoundException(
-        'No user present by this name, Plz SingUp first!',
+        'No user present by this name, Plz Login first!',
       );
     }
 
@@ -95,4 +99,30 @@ export class AuthService {
 
     return null;
   }
+
+  async register(registerDto: RegisterDto, response: Response) {
+    const existUser = await this.prisma.user.findUnique({
+      where: {
+        email: registerDto.email,
+      },
+    });
+
+    if (existUser) {
+      throw new BadRequestException({ email: 'Email already in use' });
+    }
+
+    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+
+    const newUser = await this.prisma.user.create({
+      data: {
+        fullname: registerDto.fullname,
+        email: registerDto.email,
+        password: hashedPassword,
+      },
+    });
+
+    return this.issueTokens(newUser, response);
+  }
+
+  
 }
