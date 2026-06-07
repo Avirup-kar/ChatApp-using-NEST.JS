@@ -13,7 +13,14 @@ import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
+  @UseGuards(GraphqlAuthGuard)
   @Mutation(() => User)
-
-
+  async updateProfile(
+    @Args('fullname') fullname: string,
+    @Args('file', { type: () => GraphQLUpload, nullable: true })
+    file: GraphQLUpload.FileUpload,
+    @Context() context: { req: Request },
+  ) {
+    
+  }
 }
