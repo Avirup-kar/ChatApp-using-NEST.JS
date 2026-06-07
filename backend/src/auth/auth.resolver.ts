@@ -9,17 +9,17 @@ export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
   @Mutation(() => RegisterResponse)
-  register(
+  async register(
     @Args('registerInput') registerDto: RegisterDto,
     @Context() context: { res: Response },
   ) {
-    if (registerDto.password != registerDto.confirmPassword) {
+    if (registerDto.password !== registerDto.confirmPassword) {
       throw new BadRequestException({
         confirmPassword: 'Password and confirm password are not the same.',
       });
     }
-    const user = this.authService.register(registerDto, context.res);
-    return user;
+    const { user } = await this.authService.register(registerDto, context.res);
+    return { user };
   }
 
   @Query(() => String)
