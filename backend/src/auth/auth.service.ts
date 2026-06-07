@@ -13,7 +13,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { LoginDto, RegisterDto } from './dto';
 import * as bcrypt from 'bcrypt';
 
-interface JwtPayload {
+export interface JwtPayload {
   username: string;
   sub: string; // UUID
 }
