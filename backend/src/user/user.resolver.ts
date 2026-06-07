@@ -7,7 +7,8 @@ import { GraphqlAuthGuard } from 'src/auth/graphql_auth.guard';
 import { createWriteStream } from 'fs';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import * as GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
+import GraphQLUpload from 'graphql-upload/GraphQLUpload.mjs';
+import type { FileUpload } from 'graphql-upload/processRequest.mjs';
 
 @Resolver()
 export class UserResolver {
@@ -18,7 +19,7 @@ export class UserResolver {
   async updateProfile(
     @Args('fullname') fullname: string,
     @Args('file', { type: () => GraphQLUpload, nullable: true })
-    file: GraphQLUpload.FileUpload,
+    file: FileUpload,
     @Context() context: { req: Request },
   ) {
     const imageUrl = file ? this.storeImageAndGetUrl(file) : null;
@@ -27,7 +28,7 @@ export class UserResolver {
     return this.userService.updateProfile(userId, fullname, imageUrl ?? '');
   }
 
-  private storeImageAndGetUrl(file: GraphQLUpload.FileUpload) {
+  private storeImageAndGetUrl(file: FileUpload) {
     const { createReadStream, filename } = file;
     const uniqueFilename = `${uuidv4()}_${filename}`;
     const imagePath = join(process.cwd(), 'public', 'images', uniqueFilename);
