@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { LoginResponse, RegisterResponse } from './types';
 import { LoginDto, RegisterDto } from './dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { BadRequestException } from '@nestjs/common';
 @Resolver()
 export class AuthResolver {
@@ -30,8 +30,24 @@ export class AuthResolver {
     return this.authService.login(loginDto, context.res);
   }
 
+  @Mutation(() => String)
+  logout(@Context() context: { res: Response }) {
+    return this.authService.logout(context.res);
+  }
+
   @Query(() => String)
   hello() {
     return 'hello';
+  }
+
+  @Mutation(() => String)
+  async refreshToken(@Context() context: { req: Request; res: Response }) {
+    try {
+      return this.authService.refreshToken(context.req, context.res);
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error ? error.message : 'Unable to refresh token';
+      throw new BadRequestException(message);
+    }
   }
 }

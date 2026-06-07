@@ -10,5 +10,5 @@ export class RegisterResponse {
 @ObjectType()
 export class LoginResponse {
   @Field(() => User)
-  user!: User;
+  user?: User;
 }
