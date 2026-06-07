@@ -21,18 +21,19 @@ export class UserResolver {
     file: GraphQLUpload.FileUpload,
     @Context() context: { req: Request },
   ) {
-    const imageUrl = file ? await this.storeImageAndGetUrl(file) : null;
+    const imageUrl = file ? this.storeImageAndGetUrl(file) : null;
     const userId = context.req?.user?.sub as string;
-    return this.userService.updateProfile(userId, fullname, imageUrl);
+    // ensure a string is passed to updateProfile (use empty string when no image)
+    return this.userService.updateProfile(userId, fullname, imageUrl ?? '');
   }
 
-//   private async storeImageAndGetUrl(file: GraphQLUpload) {
-//     const { createReadStream, filename } = await file;
-//     const uniqueFilename = `${uuidv4()}_${filename}`;
-//     const imagePath = join(process.cwd(), 'public', 'images', uniqueFilename);
-//     const imageUrl = `${process.env.APP_URL}/images/${uniqueFilename}`;
-//     const readStream = createReadStream();
-//     readStream.pipe(createWriteStream(imagePath));
-//     return imageUrl;
-//   }
+  private storeImageAndGetUrl(file: GraphQLUpload.FileUpload) {
+    const { createReadStream, filename } = file;
+    const uniqueFilename = `${uuidv4()}_${filename}`;
+    const imagePath = join(process.cwd(), 'public', 'images', uniqueFilename);
+    const imageUrl = `${process.env.APP_URL}/images/${uniqueFilename}`;
+    const readStream = createReadStream();
+    readStream.pipe(createWriteStream(imagePath));
+    return imageUrl;
+  }
 }
