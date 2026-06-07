@@ -22,7 +22,17 @@ export class UserResolver {
     @Context() context: { req: Request },
   ) {
     const imageUrl = file ? await this.storeImageAndGetUrl(file) : null;
-    const userId = context.req.user.sub as string;
+    const userId = context.req?.user?.sub as string;
     return this.userService.updateProfile(userId, fullname, imageUrl);
   }
+
+//   private async storeImageAndGetUrl(file: GraphQLUpload) {
+//     const { createReadStream, filename } = await file;
+//     const uniqueFilename = `${uuidv4()}_${filename}`;
+//     const imagePath = join(process.cwd(), 'public', 'images', uniqueFilename);
+//     const imageUrl = `${process.env.APP_URL}/images/${uniqueFilename}`;
+//     const readStream = createReadStream();
+//     readStream.pipe(createWriteStream(imagePath));
+//     return imageUrl;
+//   }
 }
