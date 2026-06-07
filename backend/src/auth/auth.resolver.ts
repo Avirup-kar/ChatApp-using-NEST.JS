@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
-import { RegisterResponse } from './types';
-import { RegisterDto } from './dto';
+import { LoginResponse, RegisterResponse } from './types';
+import { LoginDto, RegisterDto } from './dto';
 import { Response } from 'express';
 import { BadRequestException } from '@nestjs/common';
 @Resolver()
@@ -20,6 +20,14 @@ export class AuthResolver {
     }
     const { user } = await this.authService.register(registerDto, context.res);
     return { user };
+  }
+
+  @Mutation(() => LoginResponse)
+  async login(
+    @Args('loginInput') loginDto: LoginDto,
+    @Context() context: { res: Response },
+  ) {
+    return this.authService.login(loginDto, context.res);
   }
 
   @Query(() => String)

@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Resolver, Query } from '@nestjs/graphql';
+import { Resolver } from '@nestjs/graphql';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { User } from 'generated/prisma/client';
