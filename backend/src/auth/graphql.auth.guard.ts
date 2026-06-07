@@ -20,7 +20,7 @@ export class GraphqlAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlContext = GqlExecutionContext.create(context);
     const request = gqlContext.getContext<{ req: Request }>().req;
-    const token = this.extractTokenFromCookie(request) as string;
+    const token = this.extractTokenFromCookie(request);
 
     if (!token) {
       throw new UnauthorizedException();
@@ -38,5 +38,9 @@ export class GraphqlAuthGuard implements CanActivate {
     }
 
     return true;
+  }
+
+  private extractTokenFromCookie(request: Request): string | undefined {
+    return request.cookies?.access_token as string;
   }
 }
