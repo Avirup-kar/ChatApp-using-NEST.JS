@@ -5,7 +5,7 @@ import { Card, Text } from "@mantine/core";
 function App() {
   return (
     <>
-      <Card>
+      <Card shadow="lg">
         <Text fs="italic">Hello, World!</Text>
       </Card>
     </>
