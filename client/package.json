@@ -10,12 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@apollo/client": "^4.2.2",
+    "@apollo/client": "^4.2.3",
     "@mantine/core": "^9.3.0",
     "@mantine/dropzone": "^9.3.0",
     "@mantine/hooks": "^9.3.0",
     "@mantine/modals": "^9.3.0",
-    "graphql": "^16.14.1",
+    "graphql": "^16.14.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
