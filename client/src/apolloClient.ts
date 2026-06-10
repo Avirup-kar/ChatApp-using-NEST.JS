@@ -51,6 +51,7 @@ const wsLink = new WebSocketLink({
     },
   },
 })
+
 const errorLink = onError((errorResponse: any) => {
   const { graphQLErrors, operation, forward } = errorResponse;
   for (const err of graphQLErrors) {
