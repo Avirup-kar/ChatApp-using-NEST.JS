@@ -60,6 +60,7 @@ const errorLink = onError((errorResponse: any) => {
       return new Observable((observer) => {
         refreshToken(client)
           .then((token) => {
+            retryCount = 0
             console.log("token", token)
             operation.setContext((previousContext: any) => ({
               headers: {
