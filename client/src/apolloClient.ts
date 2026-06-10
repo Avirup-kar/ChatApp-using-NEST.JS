@@ -8,7 +8,7 @@ import {
   type TypedDocumentNode,
 } from "@apollo/client";
 import { WebSocketLink } from "@apollo/client/link/ws";
-import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
+import { createUploadLink } from "apollo-upload-client";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { useUserStore } from "./stores/userStore";
@@ -86,13 +86,13 @@ const errorLink = onError((errorResponse: any) => {
   }
 })
 
-const uploadLink = new UploadHttpLink({
+const uploadLink = createUploadLink({
   uri: "http://localhost:3000/graphql",
   credentials: "include",
   headers: {
     "apollo-require-preflight": "true",
   },
-});
+})
 
 const link = split(
   // Split based on operation type
