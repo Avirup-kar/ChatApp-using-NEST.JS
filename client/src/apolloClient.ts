@@ -7,8 +7,9 @@ import {
   split,
   type TypedDocumentNode,
 } from "@apollo/client";
-import { WebSocketLink } from "@apollo/client/link/ws";
-import { createUploadLink } from "apollo-upload-client";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
+import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";
 import { useUserStore } from "./stores/userStore";
@@ -42,15 +43,17 @@ async function refreshToken(client: ApolloClient) {
 let retryCount = 0
 const maxRetry = 3
 
-const wsLink = new WebSocketLink({
-  uri: `ws://localhost:3000/graphql`,
-  options: {
-    reconnect: true,
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: "ws://localhost:3000/graphql",
+
     connectionParams: {
       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
     },
-  },
-})
+
+    retryAttempts: 5,
+  })
+);
 
 const errorLink = onError((errorResponse: any) => {
   const { graphQLErrors, operation, forward } = errorResponse;
@@ -86,7 +89,7 @@ const errorLink = onError((errorResponse: any) => {
   }
 })
 
-const uploadLink = createUploadLink({
+const uploadLink = new UploadHttpLink({
   uri: "http://localhost:3000/graphql",
   credentials: "include",
   headers: {
