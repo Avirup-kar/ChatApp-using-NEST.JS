@@ -7,9 +7,9 @@ import { ApolloProvider } from '@apollo/client/react';
 import { client } from './apolloClient.ts';
 
 createRoot(document.getElementById('root')!).render(
-  <MantineProvider>
     <ApolloProvider client={client}>
-      <App />
+      <MantineProvider>
+          <App />
+      </MantineProvider>
     </ApolloProvider>
-  </MantineProvider>
 )
