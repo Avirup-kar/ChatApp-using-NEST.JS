@@ -9,6 +9,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { RedisPubSub } from 'graphql-redis-subscriptions';
+import { TokenService } from './token/token.service';
 
 const pubSub = new RedisPubSub({
   connection: {
@@ -42,6 +43,6 @@ const pubSub = new RedisPubSub({
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, TokenService],
 })
 export class AppModule {}
