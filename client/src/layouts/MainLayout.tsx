@@ -1,10 +1,10 @@
-import React from 'react'
+import { Flex } from "@mantine/core"
 
-const MainLayout = () => {
+const MainLayout = ({ children }: { children: React.ReactElement }) => {
   return (
-    <div>
-      
-    </div>
+    <Flex>
+      <Flex>{children}</Flex>
+    </Flex>
   )
 }
 
