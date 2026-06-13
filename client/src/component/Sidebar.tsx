@@ -114,15 +114,47 @@ function Sidebar() {
     setUser({
       id: undefined,
       fullname: "",
-      avatarUrl: null,
       email: "",
+      avatarUrl: null,
     })
   }
 
   return (
-    <div>
-     <h1>Sidebar</h1>
-    </div>
+    <Navbar fixed zIndex={100} w={rem(100)} p="md">
+      <Center>
+        <IconBrandMessenger type="mark" size={30} />
+      </Center>
+      <Navbar.Section grow mt={50}>
+        <Stack justify="center" spacing={0}>
+          {userId && links}
+        </Stack>
+      </Navbar.Section>
+      <Navbar.Section>
+        <Stack justify="center" spacing={0}>
+          {userId && (
+            <NavbarLink
+              icon={IconUser}
+              label={"Profile(" + user.fullname + ")"}
+              onClick={toggleProfileSettingsModal}
+            />
+          )}
+
+          {userId ? (
+            <NavbarLink
+              icon={IconLogout}
+              label="Logout"
+              onClick={handleLogout}
+            />
+          ) : (
+            <NavbarLink
+              icon={IconLogin}
+              label="Login"
+              onClick={toggleLoginModal}
+            />
+          )}
+        </Stack>
+      </Navbar.Section>
+    </Navbar>
   )
 }
 
