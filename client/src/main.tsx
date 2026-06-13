@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import './index.css';
-import "@mantine/core/styles.css";
+// import "@mantine/core/styles.css";
 import { MantineProvider } from '@mantine/core'
 import { ApolloProvider } from '@apollo/client/react';
 import { client } from './apolloClient.ts';
