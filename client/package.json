@@ -15,6 +15,7 @@
     "@mantine/dropzone": "^9.3.0",
     "@mantine/hooks": "^9.3.0",
     "@mantine/modals": "^9.3.0",
+    "@tabler/icons-react": "^3.44.0",
     "@types/apollo-upload-client": "^19.0.0",
     "apollo-upload-client": "^19.0.0",
     "graphql": "^16.14.2",
